@@ -1,0 +1,44 @@
+{
+  "name": "larasense/static-markdown-route",
+  "description": "define routes in your application with content that can be static generated either for performance issues or for simplicity.",
+  "type": "library",
+  "require": {
+    "illuminate/support": "^10.12",
+    "spatie/laravel-ignition": "^2.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^8.5",
+    "nunomaduro/larastan": "^2.6",
+    "pestphp/pest": "^2.6",
+    "laravel/pint": "^1.10",
+    "pestphp/pest-plugin-laravel": "^2.0",
+    "vimeo/psalm": "^5.12"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Larasense\\StaticMarkdownRoute\\": "src/",
+      "Larasense\\StaticMarkdownRoute\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Jose Norberto SANCHEZ",
+      "email": "josensanchez@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "extra": {
+    "laravel": {
+      "dont-discover": [
+        "*"
+      ]
+    }
+  },
+  "scripts": {},
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
