@@ -56,7 +56,11 @@ function artisan(string $command): Mockery
     return test()->artisan($command); // phpstan-ignore-line
 }
 
-function fakeResponse(string $content = ""): Response
+/**
+ *
+ * @param array<string, mixed>|string $content
+ */
+function fakeResponse(string|array $content = ""): Response
 {
     return ResponseFacade::make($content);
 }

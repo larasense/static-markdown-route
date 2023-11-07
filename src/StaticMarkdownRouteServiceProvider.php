@@ -4,6 +4,7 @@ namespace Larasense\StaticMarkdownRoute;
 
 use Illuminate\Support\ServiceProvider;
 use Larasense\StaticMarkdownRoute\Console\Commands\GenerateCommand;
+use Larasense\StaticMarkdownRoute\Console\Commands\ListCommand;
 
 class StaticMarkdownRouteServiceProvider extends ServiceProvider
 {
@@ -13,6 +14,7 @@ class StaticMarkdownRouteServiceProvider extends ServiceProvider
             $this->commands(
                 [
                     GenerateCommand::class,
+                    ListCommand::class,
                 ],
             );
         }

@@ -1,25 +1,47 @@
 <?php
 
 use Larasense\StaticMarkdownRoute\Facades\MarkDownRoute;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Config;
 use Symfony\Component\Finder\SplFileInfo;
-use function Pest\Laravel\{artisan, get};
+use function Pest\Laravel\{artisan};
 
-it('should list pages to generate');
+it('should list pages to generate', function(){
+    Config::set('app.url', 'http://localhost');
+    MarkDownRoute::get('/docs', base_path() . "/docus");
+
+    File::shouldReceive('allFiles')
+        ->with(base_path() . "/docus")
+        ->andReturn(
+            [
+                new SplFileInfo(base_path() . "/docs/README.md", "", "README.md"),
+                new SplFileInfo(base_path() . "/docs/dir1/README.md", "dir1", "dir1/README.md"),
+            ])->times(1);
+
+    artisan('static:list-markdown-routes')
+    ->expectsTable(['Markdown Pages'], [["http://localhost/docs/README"],["http://localhost/docs/dir1/README"]])
+    ->assertSuccessful()
+    ;
+
+});
 
 it('should generate pages', function () {
-    MarkDownRoute::get('/docs', base_path() . "/docs");
+    Config::set('app.url', 'http://localhost');
+    MarkDownRoute::get('/docs', base_path() . "/docus");
 
-    File::shouldReceive('get')->with(base_path() . "/docs/README.md")->andReturn("# title")->times(1);
-    File::shouldReceive('get')->with(base_path() . "/docs/dir1/README.md")->andReturn("# title dir1");
-    File::shouldReceive('allFiles')->with(base_path() . "/docs")->andReturn([new SplFileInfo(base_path() . "/docs/README.md", "", "README.md")])->times(1);
+    $response = fakeResponse(['props'=>[]]);
+    File::shouldReceive('allFiles')
+        ->with(base_path() . "/docus")
+        ->andReturn(
+            [
+                new SplFileInfo(base_path() . "/docs/README.md", "", "README.md"),
+                new SplFileInfo(base_path() . "/docs/dir1/README.md", "dir1", "dir1/README.md"),
+            ])->times(1);
     File::makePartial();
+    Http::shouldReceive('get')->with('http://localhost/docs/README')->andReturn($response)->times(1);
+    Http::shouldReceive('get')->with('http://localhost/docs/dir1/README')->andReturn($response)->times(1);
 
     artisan('static:generate-markdown-routes')->assertSuccessful();
-})->only();
+});
 
-it('should update images link to destination URL');
-
-it('should copy images into destination URL');
-
-it('should generate content menu');

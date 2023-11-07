@@ -39,10 +39,23 @@ class MarkdownRouteService
         foreach($this->dir_info as $route => $directory){
             $files = File::allFiles($directory);
             foreach($files as $file){
-                $dir_files["/docs/".$file->getRelativePathname()]=$file->getPathname();
+                $dir_files[$this->toUrl($this->urlPath($route)."".$file->getRelativePathname())]=$file->getPathname();
             }
         }
         return $dir_files;
 
+    }
+
+    protected function toUrl(string $filename): string
+    {
+        if(substr($filename, -3)==='.md'){
+            return substr($filename,0,-3);
+        }
+        return $filename;
+    }
+
+    protected function urlPath(string $uri): string
+    {
+        return str_replace('{file}', '', $uri );
     }
 }
