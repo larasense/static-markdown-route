@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Config;
 */
 
 uses(Larasense\StaticMarkdownRoute\Tests\TestCase::class)
-    ->beforeEach(function(){
-      Config::set('filesystems.disks.ssg:store', ['driver'=>'local', 'root'=>'/tmp', 'throw' => false]);
+    ->beforeEach(function () {
+        Config::set('filesystems.disks.ssg:store', ['driver'=>'local', 'root'=>'/tmp', 'throw' => false]);
     })
     ->group('features')
     ->in('Feature');

@@ -4,8 +4,8 @@ namespace Larasense\StaticMarkdownRoute\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 use Larasense\StaticMarkdownRoute\Facades\MarkDownRoute;
+use Larasense\StaticMarkdownRoute\Models\FileInfo;
 
 class ListCommand extends Command
 {
@@ -29,7 +29,7 @@ class ListCommand extends Command
 
         $this->table(
             ['Markdown Pages'],
-            collect(array_keys($files))->map(fn($url) => ["{$app_url}{$url}"])->toArray()
+            collect($files)->map(fn (FileInfo $fileInfo) => ["{$app_url}{$fileInfo->url}"])->toArray()
         );
 
     }

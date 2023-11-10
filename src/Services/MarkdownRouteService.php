@@ -6,6 +6,7 @@ use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Larasense\StaticMarkdownRoute\Http\Controllers\MarkdownController;
+use Larasense\StaticMarkdownRoute\Models\FileInfo;
 
 class MarkdownRouteService
 {
@@ -26,36 +27,29 @@ class MarkdownRouteService
         return $this;
     }
 
-    public function getDirInfo(string $uri):string
+    public function getDirInfo(string $uri): string
     {
         return $this->dir_info["/$uri"];
     }
     /**
-     * @return array<string,string>
+     * @return array<int,\Larasense\StaticMarkdownRoute\Models\FileInfo>
      */
-    public function getDirFiles():array
+    public function getDirFiles(): array
     {
         $dir_files = [];
-        foreach($this->dir_info as $route => $directory){
+        foreach($this->dir_info as $route => $directory) {
             $files = File::allFiles($directory);
-            foreach($files as $file){
-                $dir_files[$this->toUrl($this->urlPath($route)."".$file->getRelativePathname())]=$file->getPathname();
+            foreach($files as $file) {
+                $dir_files []= new FileInfo(
+                    $route,
+                    dirname(urlPath($route).$file->getRelativePathname())."/".$file->getBasename('.' . $file->getExtension()),
+                    $directory,
+                    $file->getPathname()
+                );
             }
         }
         return $dir_files;
 
     }
 
-    protected function toUrl(string $filename): string
-    {
-        if(substr($filename, -3)==='.md'){
-            return substr($filename,0,-3);
-        }
-        return $filename;
-    }
-
-    protected function urlPath(string $uri): string
-    {
-        return str_replace('{file}', '', $uri );
-    }
 }

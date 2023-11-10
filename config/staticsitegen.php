@@ -21,4 +21,3 @@ return [
     'storage_name' => env('SSG_STORAGE_NAME', 'ssg:store'),
 
 ];
-

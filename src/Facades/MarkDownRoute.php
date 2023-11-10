@@ -12,7 +12,6 @@ use Larasense\StaticMarkdownRoute\Services\MarkdownRouteService;
  */
 class MarkDownRoute extends Facade
 {
-
     /**
      * Get the registered name of the component.
      */
