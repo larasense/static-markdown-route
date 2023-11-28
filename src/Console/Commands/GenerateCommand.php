@@ -33,16 +33,18 @@ class GenerateCommand extends Command
         $output->progressStart(count($files));
 
         foreach($files as $fileInfo) {
-            Http::get("{$app_url}{$fileInfo->url}");
+            $htmlPage = Http::get("{$app_url}{$fileInfo->url}")->body();
+            File::put(dirname(public_path(). $fileInfo->url) . "/" . basename($fileInfo->filename), $htmlPage);
             $content = File::get($fileInfo->filename);
             $pattern = "/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/i";
             if(preg_match_all($pattern, $content, $matches)) {
                 /** @var array<int,string> files */
                 $filenames = $matches['filename'];
                 collect($filenames)
-                    ->filter(fn (string $filename) =>Str::startsWith($filename, './'))
-                    ->map(fn(string $filename) => $fileInfo->directory."/".Str::substr($filename, 2))
+                    ->filter(fn (string $filename) => Str::startsWith($filename, './'))
+                    ->map(fn (string $filename) => dirname($fileInfo->filename)."/".Str::substr($filename, 2))
                     ->each(function (string $filename) use ($fileInfo) {
+                        File::ensureDirectoryExists(dirname(public_path(). $fileInfo->url));
                         File::copy($filename, dirname(public_path(). $fileInfo->url) . "/" . basename($filename));
                     })
                 ;

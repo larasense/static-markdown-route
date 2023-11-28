@@ -10,6 +10,9 @@ class MarkdownService
 {
     public function toHtml(string $root, string $filename): string|null
     {
+        if (!File::exists($filename)) {
+            return null;
+        }
         $content = File::get($filename);
         if(!$content) {
             return null;
@@ -31,7 +34,7 @@ class MarkdownService
             /** @var array<int,string> files */
             $filenames = $matches['filename'];
             collect($filenames)
-                ->filter(fn (string $filename) =>Str::startsWith($filename, './'))
+                ->filter(fn (string $filename) => Str::startsWith($filename, './'))
                 ->each(function (string $filename) use (&$content, $url_base) {
                     $content = str_replace($filename, $url_base."/".Str::substr($filename, 2), $content);
                 })

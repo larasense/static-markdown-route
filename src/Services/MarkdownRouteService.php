@@ -5,6 +5,7 @@ namespace Larasense\StaticMarkdownRoute\Services;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as RouteFacade;
+use Illuminate\Support\Str;
 use Larasense\StaticMarkdownRoute\Http\Controllers\MarkdownController;
 use Larasense\StaticMarkdownRoute\Models\FileInfo;
 
@@ -18,7 +19,8 @@ class MarkdownRouteService
         $this->addDirInfo($uri, $directory);
 
         return RouteFacade::get("$uri/{file}", [MarkdownController::class, 'handle'])
-        ->where('file', '.*');
+            // ->where('file', '.*')
+        ->where('file', '.*\.(md|MD|html|HTML)$');
     }
 
     public function addDirInfo(string $uri, string $directory): self
@@ -38,9 +40,9 @@ class MarkdownRouteService
     {
         $dir_files = [];
         foreach($this->dir_info as $route => $directory) {
-            $files = File::allFiles($directory);
+            $files = collect(File::allFiles($directory))->filter(fn ($file) => Str::substr($file, -3) == '.md');
             foreach($files as $file) {
-                $dir_files []= new FileInfo(
+                $dir_files[] = new FileInfo(
                     $route,
                     dirname(urlPath($route).$file->getRelativePathname())."/".$file->getBasename('.' . $file->getExtension()),
                     $directory,

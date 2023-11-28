@@ -29,6 +29,7 @@ it('should register the route as a `Illuminate\Routing\Route`', function () {
 it('should response with a html page from the directory', function () {
     MarkDownRoute::get('/docs', base_path() . "/docs");
 
+    File::shouldReceive('exists')->with(base_path() . "/docs/README.md")->andReturn("# title");
     File::shouldReceive('get')->with(base_path() . "/docs/README.md")->andReturn("# title");
     File::makePartial();
 
@@ -39,6 +40,7 @@ it('should response with a html page from the directory', function () {
 it('should response with a html page from the directory in a directory', function () {
     MarkDownRoute::get('/docs', base_path() . "/docs");
 
+    File::shouldReceive('exists')->with(base_path() . "/docs/dir1/README.md")->andReturn("# title dir1");
     File::shouldReceive('get')->with(base_path() . "/docs/dir1/README.md")->andReturn("# title dir1");
     File::makePartial();
 
@@ -47,10 +49,11 @@ it('should response with a html page from the directory in a directory', functio
     expect($response->getContent())->toContain("<h1>title dir1</h1>");
 });
 
-it('should contain the right image path', function(){
+it('should contain the right image path', function () {
 
     MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
 
+    File::shouldReceive('exists')->with(base_path() . "/base_docs/dir1/README.md")->andReturn("![alt text](./image.png)");
     File::shouldReceive('get')->with(base_path() . "/base_docs/dir1/README.md")->andReturn("![alt text](./image.png)");
     File::makePartial();
 

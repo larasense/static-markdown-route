@@ -39,7 +39,7 @@ it('should generate pages', function () {
     Config::set('app.url', 'http://localhost');
     MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
 
-    $response = fakeResponse(['props'=>[]]);
+    $response = fakeResponse(['props' => []]);
     File::shouldReceive('allFiles')
         ->with(base_path() . "/base_docs")
         ->andReturn(
@@ -58,7 +58,7 @@ it('should generate pages', function () {
 });
 
 
-it('should copy images into destination URL', function () use($strMarkdown){
+it('should copy images into destination URL', function () use ($strMarkdown) {
 
     MarkDownRoute::get('/docs', base_path() . "/docus");
     File::shouldReceive('allFiles')
@@ -66,14 +66,17 @@ it('should copy images into destination URL', function () use($strMarkdown){
         ->andReturn(
             [
                 new SplFileInfo(base_path() . "/docus/README.md", "", "README.md"),
+                new SplFileInfo(base_path() . "/docus/dir1/README.md", "dir1", "dir1/README.md"),
             ]
         )->times(1);
     File::shouldReceive('get')->with(base_path() . "/docus/README.md")->andReturn($strMarkdown);
+    File::shouldReceive('get')->with(base_path() . "/docus/dir1/README.md")->andReturn($strMarkdown);
     File::shouldReceive('copy')->with(base_path() . "/docus/image.png", public_path() . "/docs/image.png")->andReturn(true)->times(1);
-    File::makePartial();
+    File::shouldReceive('copy')->with(base_path() . "/docus/dir1/image.png", public_path() . "/docs/dir1/image.png")->andReturn(true)->times(1);
 
-    $response = fakeResponse(['props'=>[]]);
+    $response = fakeResponse(['props' => []]);
     Http::shouldReceive('get')->with('http://localhost/docs/README')->andReturn($response)->times(1);
+    Http::shouldReceive('get')->with('http://localhost/docs/dir1/README')->andReturn($response)->times(1);
 
     artisan('static:generate-markdown-routes')->assertSuccessful();
 

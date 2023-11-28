@@ -18,6 +18,7 @@ in the middle of a text ![](./image3.png) or something
 EOD;
 
 it('should generate html from filename', function () use ($strMarkdown) {
+    File::shouldReceive('exists')->with('filename.md')->andReturn($strMarkdown);
     File::shouldReceive('get')->with('filename.md')->andReturn($strMarkdown);
 
     expect(
@@ -28,6 +29,7 @@ it('should generate html from filename', function () use ($strMarkdown) {
 it('should update images link to destination URL', function () use ($strMarkdown) {
 
     MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
+    File::shouldReceive('exists')->with(base_path() . '/base_docs/filename.md')->andReturn($strMarkdown);
     File::shouldReceive('get')->with(base_path() . '/base_docs/filename.md')->andReturn($strMarkdown);
 
     expect(
@@ -43,6 +45,7 @@ it('should update images link to destination URL', function () use ($strMarkdown
 it('should update images link to destination URL for sub directories', function () use ($strMarkdown) {
 
     MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
+    File::shouldReceive('exists')->with(base_path(). '/base_docs/dir1/filename.md')->andReturn($strMarkdown);
     File::shouldReceive('get')->with(base_path(). '/base_docs/dir1/filename.md')->andReturn($strMarkdown);
 
     expect(
