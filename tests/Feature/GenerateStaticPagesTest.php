@@ -29,8 +29,8 @@ it('should list pages to generate', function () {
         )->times(1);
 
     artisan('static:list-markdown-routes')
-    ->expectsTable(['Markdown Pages'], [["http://localhost/docs/README"],["http://localhost/docs/dir1/README"]])
-    ->assertSuccessful()
+        ->expectsTable(['Markdown Pages'], [["http://localhost/docs/README.html"],["http://localhost/docs/dir1/README.html"]])
+        ->assertSuccessful()
     ;
 
 });
@@ -50,9 +50,9 @@ it('should generate pages', function () {
         )->times(1);
     File::shouldReceive('get')->with(base_path() . "/base_docs/README.md")->andReturn("# Title");
     File::shouldReceive('get')->with(base_path() . "/base_docs/dir1/README.md")->andReturn("# Dir1 Title");
-    File::makePartial();
-    Http::shouldReceive('get')->with('http://localhost/public_docs/README')->andReturn($response)->times(1);
-    Http::shouldReceive('get')->with('http://localhost/public_docs/dir1/README')->andReturn($response)->times(1);
+    File::partialMock();
+    Http::shouldReceive('get')->with('http://localhost/public_docs/README.html')->andReturn($response)->times(1);
+    Http::shouldReceive('get')->with('http://localhost/public_docs/dir1/README.html')->andReturn($response)->times(1);
 
     artisan('static:generate-markdown-routes')->assertSuccessful();
 });
@@ -71,12 +71,10 @@ it('should copy images into destination URL', function () use ($strMarkdown) {
         )->times(1);
     File::shouldReceive('get')->with(base_path() . "/docus/README.md")->andReturn($strMarkdown);
     File::shouldReceive('get')->with(base_path() . "/docus/dir1/README.md")->andReturn($strMarkdown);
-    File::shouldReceive('copy')->with(base_path() . "/docus/image.png", public_path() . "/docs/image.png")->andReturn(true)->times(1);
-    File::shouldReceive('copy')->with(base_path() . "/docus/dir1/image.png", public_path() . "/docs/dir1/image.png")->andReturn(true)->times(1);
 
     $response = fakeResponse(['props' => []]);
-    Http::shouldReceive('get')->with('http://localhost/docs/README')->andReturn($response)->times(1);
-    Http::shouldReceive('get')->with('http://localhost/docs/dir1/README')->andReturn($response)->times(1);
+    Http::shouldReceive('get')->with('http://localhost/docs/README.html')->andReturn($response)->times(1);
+    Http::shouldReceive('get')->with('http://localhost/docs/dir1/README.html')->andReturn($response)->times(1);
 
     artisan('static:generate-markdown-routes')->assertSuccessful();
 

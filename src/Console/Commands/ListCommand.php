@@ -29,7 +29,7 @@ class ListCommand extends Command
 
         $this->table(
             ['Markdown Pages'],
-            collect($files)->map(fn (FileInfo $fileInfo) => ["{$app_url}{$fileInfo->url}"])->toArray()
+            collect($files)->map(fn (FileInfo $fileInfo) => ["{$app_url}{$fileInfo->url}.html"])->toArray()
         );
 
     }

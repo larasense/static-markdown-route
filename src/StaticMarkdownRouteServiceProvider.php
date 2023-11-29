@@ -27,7 +27,7 @@ class StaticMarkdownRouteServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/staticsitegen.php',
+            __DIR__.'/../config/staticmarkdownroute.php',
             'static-markdown-route'
         );
     }
