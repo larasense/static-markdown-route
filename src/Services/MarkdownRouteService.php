@@ -7,9 +7,11 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as RouteFacade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Larasense\StaticMarkdownRoute\Http\Controllers\MarkdownController;
 use Larasense\StaticMarkdownRoute\Http\Middleware\SRGMiddleware;
+use Larasense\StaticMarkdownRoute\Models\EmptyRoute;
 use Larasense\StaticMarkdownRoute\Models\FileInfo;
 
 class MarkdownRouteService
@@ -17,8 +19,12 @@ class MarkdownRouteService
     /** @var array<string,string> $dir_info; */
     protected array $dir_info = [];
 
-    public function get(string $uri, string $directory): Route
+    public function get(string $uri, string $directory): Route | EmptyRoute
     {
+        if(app()->environment('production') && !Config::get('staticmarkdownroute.force')) {
+            return new EmptyRoute();
+        }
+
         $this->addDirInfo($uri, $directory);
 
         return RouteFacade::get("$uri/{file}", [MarkdownController::class, 'handle'])
@@ -60,7 +66,7 @@ class MarkdownRouteService
 
     public function process(Request $request, Response $response): void
     {
-        if(app()->environment('production')) {
+        if(!Config::get('staticmarkdownroute.force')) {
             return;
         }
         if ($response->status() !== 200) {
@@ -103,5 +109,10 @@ class MarkdownRouteService
                 File::copy($fileInfo->filename, $fileInfo->url);
             }
         }
+    }
+
+    public function hasFiles(): bool
+    {
+        return true;
     }
 }

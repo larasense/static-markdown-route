@@ -14,6 +14,6 @@ return [
     */
 
     'enabled' => env('SMR_ENABLED', true),
-    'force' => env('SMR_FORCE', true),
+    'force' =>  false,
 
 ];

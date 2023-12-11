@@ -28,9 +28,17 @@ class GenerateCommand extends Command
         $files = MarkDownRoute::getDirFiles();
         $output = $this->output;
 
+        if(MarkDownRoute::hasFiles()) {
+            $delete = $this->components->ask('there are already generated files. Do you want to delete these files?[Y/n]', 'y');
+            if($delete == 'y') {
+                $this->components->warn('files deleted');
+            }
+        }
+
+
         if(app()->environment('production')) {
             $this->components->info('Activating the markdown Routes and middlewares for Production.');
-            Config::set('staticmarkdownroute.force', true)
+            Config::set('staticmarkdownroute.force', true);
         }
 
         $output->progressStart(count($files));
@@ -41,6 +49,11 @@ class GenerateCommand extends Command
             $output->progressAdvance();
         }
         $output->progressFinish();
+
+        if(app()->environment('production')) {
+            $this->components->info('Activating the markdown Routes and middlewares for Production.');
+            Config::set('staticmarkdownroute.force', false);
+        }
         $this->info('HTML pages generated successfully.');
     }
 }
