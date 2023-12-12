@@ -11,8 +11,7 @@
     "nunomaduro/larastan": "^2.6",
     "pestphp/pest": "^2.6",
     "laravel/pint": "^1.10",
-    "pestphp/pest-plugin-laravel": "^2.0",
-    "vimeo/psalm": "^5.12"
+    "pestphp/pest-plugin-laravel": "^2.0"
   },
   "license": "MIT",
   "autoload": {
