@@ -111,8 +111,25 @@ class MarkdownRouteService
         }
     }
 
-    public function hasFiles(): bool
+    public function publicDirectoriesHaveFiles(): bool
     {
-        return true;
+        foreach ($this->dir_info as $uri => $_) {
+            $dir = Str::replace('{file}', '', $uri); /** @var string $dir */
+            if (!File::isEmptyDirectory(public_path() . $dir, true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function deletePublicDirectories(): bool
+    {
+        foreach ($this->dir_info as $uri => $_) {
+            $dir = Str::replace('{file}', '', $uri); /** @var string $dir */
+            if (!File::deleteDirectory(public_path() . $dir, false)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -58,5 +58,3 @@ it('should update images link to destination URL for sub directories', function 
 
 });
 
-
-it('should generate content menu');

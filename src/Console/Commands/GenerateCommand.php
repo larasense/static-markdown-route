@@ -25,14 +25,16 @@ class GenerateCommand extends Command
     {
         /** @var string $app_url */
         $app_url = Config::get('app.url');
-        $files = MarkDownRoute::getDirFiles();
         $output = $this->output;
 
-        if(MarkDownRoute::hasFiles()) {
+        if(MarkDownRoute::publicDirectoriesHaveFiles()) {
             $delete = $this->components->ask('there are already generated files. Do you want to delete these files?[Y/n]', 'y');
-            if($delete == 'y') {
-                $this->components->warn('files deleted');
+            if($delete !== 'y') {
+                $this->info('generation Canceled.');
+                return;
             }
+            MarkDownRoute::deletePublicDirectories();
+            $this->components->warn('files deleted');
         }
 
 
@@ -41,6 +43,8 @@ class GenerateCommand extends Command
             Config::set('staticmarkdownroute.force', true);
         }
 
+        // Starting the process
+        $files = MarkDownRoute::getDirFiles();
         $output->progressStart(count($files));
 
 
