@@ -5,3 +5,13 @@ repos:
        - id: php-stan
          pass_filenames: false
        - id: php-lint
+  -  repo: local
+     hooks:
+       - id: pest
+         name: Pest PHP - Automated Test Suite
+         entry: ./vendor/bin/pest
+         language: system
+         types: [php]
+         stages: [commit]
+         require_serial: true
+         pass_filenames: false
