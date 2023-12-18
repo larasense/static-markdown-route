@@ -137,7 +137,6 @@ it('should copy images into destination URL', function () use ($strMarkdown) {
     Http::shouldReceive('get')->with('http://localhost/docs/README.html')->andReturn($response)->times(1);
     Http::shouldReceive('get')->with('http://localhost/docs/dir1/README.html')->andReturn($response)->times(1);
 
-    artisan('static:generate-markdown-routes')->assertSuccessful("pregunta");
-
-
+    artisan('static:generate-markdown-routes')
+    ->assertSuccessful();
 });
