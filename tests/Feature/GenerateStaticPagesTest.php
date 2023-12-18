@@ -3,7 +3,6 @@
 use Larasense\StaticMarkdownRoute\Facades\MarkDownRoute;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Config;
 use Symfony\Component\Finder\SplFileInfo;
 
 use function Pest\Laravel\{artisan};
@@ -16,7 +15,6 @@ $strMarkdown = <<<EOD
 EOD;
 
 it('should list pages to generate', function () {
-    Config::set('app.url', 'http://localhost');
     MarkDownRoute::get('/docs', base_path() . "/docus");
 
     File::shouldReceive('allFiles')
@@ -36,7 +34,6 @@ it('should list pages to generate', function () {
 });
 
 it('should generate pages', function () {
-    Config::set('app.url', 'http://localhost');
     MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
 
     $response = fakeResponse(['props' => []]);
@@ -61,7 +58,6 @@ it('should generate pages', function () {
 });
 
 it('should generate pages even when public directory is not empty', function () {
-    Config::set('app.url', 'http://localhost');
     MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
 
     $response = fakeResponse(['props' => []]);
@@ -87,7 +83,6 @@ it('should generate pages even when public directory is not empty', function () 
 });
 
 it('should not generate the files if the user choose not to', function () {
-    Config::set('app.url', 'http://localhost');
     MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
 
     File::shouldReceive('isEmptyDirectory')->with(public_path() . "/public_docs/", true)->andReturn(false);
@@ -100,7 +95,6 @@ it('should not generate the files if the user choose not to', function () {
 });
 
 it('should generate pages even when public directory is not empty and its forced to', function () {
-    Config::set('app.url', 'http://localhost');
     MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
 
     $response = fakeResponse(['props' => []]);

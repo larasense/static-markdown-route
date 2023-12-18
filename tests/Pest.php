@@ -45,6 +45,7 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
+use Illuminate\Testing\PendingCommand;
 use Larasense\StaticSiteGeneration\Tests\Stubs\Controllers\{TestPathController, TestRevalidateController};
 use Illuminate\Support\Facades\Route;
 use Larasense\StaticSiteGeneration\Http\Middleware\SSGMiddleware;
@@ -76,3 +77,4 @@ function registerRoutes(): array
     ];
     return $routes;
 }
+
