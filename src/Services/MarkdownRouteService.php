@@ -124,12 +124,14 @@ class MarkdownRouteService
 
     public function deletePublicDirectories(): bool
     {
+        $deleted = false;
         foreach ($this->dir_info as $uri => $_) {
             $dir = Str::replace('{file}', '', $uri); /** @var string $dir */
-            if (!File::deleteDirectory(public_path() . $dir, false)) {
-                return true;
+            $itDidDeleteIt = File::deleteDirectory(public_path() . $dir, false);
+            if ($itDidDeleteIt){
+                $deleted = true;
             }
         }
-        return false;
+        return $deleted;
     }
 }

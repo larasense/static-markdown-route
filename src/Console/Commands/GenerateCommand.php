@@ -9,7 +9,7 @@ use Larasense\StaticMarkdownRoute\Facades\MarkDownRoute;
 
 class GenerateCommand extends Command
 {
-    protected $signature = 'static:generate-markdown-routes';
+    protected $signature = 'static:generate-markdown-routes {--F|force}';
 
     /**
      * The console command description.
@@ -23,12 +23,15 @@ class GenerateCommand extends Command
      */
     public function handle(): void
     {
+        ['force'=>$force] = $this->options();
         /** @var string $app_url */
         $app_url = Config::get('app.url');
         $output = $this->output;
 
         if(MarkDownRoute::publicDirectoriesHaveFiles()) {
-            $delete = $this->components->ask('there are already generated files. Do you want to delete these files?[Y/n]', 'y');
+            $delete = (!$force)?
+                    $this->components->ask('there are already generated files. Do you want to delete these files?[Y/n]', 'y'):
+                    'y';
             if($delete !== 'y') {
                 $this->info('generation Canceled.');
                 return;

@@ -99,6 +99,31 @@ it('should not generate the files if the user choose not to', function () {
     ;
 });
 
+it('should generate pages even when public directory is not empty and its forced to', function () {
+    Config::set('app.url', 'http://localhost');
+    MarkDownRoute::get('/public_docs', base_path() . "/base_docs");
+
+    $response = fakeResponse(['props' => []]);
+    File::shouldReceive('allFiles')
+        ->with(base_path() . "/base_docs")
+        ->andReturn(
+            [
+                new SplFileInfo(base_path() . "/base_docs/README.md", "", "README.md"),
+                new SplFileInfo(base_path() . "/base_docs/dir1/README.md", "dir1", "dir1/README.md"),
+            ]
+        )->times(1);
+    File::shouldReceive('get')->with(base_path() . "/base_docs/README.md")->andReturn("# Title");
+    File::shouldReceive('get')->with(base_path() . "/base_docs/dir1/README.md")->andReturn("# Dir1 Title");
+    File::shouldReceive('isEmptyDirectory')->with(public_path() . "/public_docs/", true)->andReturn(false);
+    File::partialMock();
+    Http::shouldReceive('get')->with('http://localhost/public_docs/README.html')->andReturn($response)->times(1);
+    Http::shouldReceive('get')->with('http://localhost/public_docs/dir1/README.html')->andReturn($response)->times(1);
+
+    artisan('static:generate-markdown-routes -F')
+    ->assertSuccessful()
+    ;
+});
+
 it('should copy images into destination URL', function () use ($strMarkdown) {
 
     MarkDownRoute::get('/docs', base_path() . "/docus");
